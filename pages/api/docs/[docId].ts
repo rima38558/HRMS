@@ -1,8 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '../../../lib/prisma'
 import { getUserFromRequest } from '../../../lib/auth'
-import fs from 'fs'
-import path from 'path'
+import * as fs from 'fs'
+import * as path from 'path'
 import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 
@@ -29,12 +29,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   // serve local file
   const uploadsDir = path.join(process.cwd(), 'uploads', doc.orderId)
-  const filepath = fs.readdirSync(uploadsDir).map(f=>path.join(uploadsDir,f)).find(p=>p.includes(doc.filename) || p.includes(doc.id) || true)
+  const filepath = fs.readdirSync(uploadsDir).map((f: string) => path.join(uploadsDir, f)).find((p: string) => p.includes(doc.filename) || p.includes(doc.id) || true)
   if (!filepath || !fs.existsSync(filepath)) return res.status(404).json({ error: 'File not available' })
   const stat = fs.statSync(filepath)
   res.setHeader('Content-Length', String(stat.size))
   res.setHeader('Content-Type', 'application/octet-stream')
-  res.setHeader('Content-Disposition', `attachment; filename="${doc.filename.replace(/\"/g,'') }"`)
+    // Use single quotes in header value to avoid escaped double quotes
+    res.setHeader('Content-Disposition', `attachment; filename='${doc.filename.replace(/'/g,'') }'`)
   const stream = fs.createReadStream(filepath)
   stream.pipe(res)
 }

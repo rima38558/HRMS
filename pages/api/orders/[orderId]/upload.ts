@@ -1,8 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import prisma from '../../../../lib/prisma'
 import { getUserFromRequest } from '../../../../lib/auth'
-import fs from 'fs'
-import path from 'path'
+import * as fs from 'fs'
+import * as path from 'path'
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse){

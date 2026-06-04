@@ -15,8 +15,8 @@ export default function Checkout(){
       if (!res.ok) throw new Error(data.error || 'Failed')
 
       // Build an auto-submitting form
-      const inputs = Object.entries(data.params).map(([k,v]) => `<input type=\"hidden\" name=\"${k}\" value=\"${v}\"/>`).join('')
-      const html = `<!doctype html><html><body><form id=\"payuform\" method=\"post\" action=\"${data.action}\">${inputs}</form><script>document.getElementById('payuform').submit()</script></body></html>`
+      const inputs = Object.entries(data.params).map(([k,v]) => `<input type='hidden' name='${k}' value='${v}'/>`).join('')
+      const html = `<!doctype html><html><body><form id='payuform' method='post' action='${data.action}'>${inputs}</form><script>document.getElementById('payuform').submit()</script></body></html>`
       setFormHtml(html)
     }catch(err: any){
       alert(err.message || 'Error')

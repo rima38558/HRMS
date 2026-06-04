@@ -2,6 +2,9 @@ import jwt from 'jsonwebtoken'
 import { NextApiResponse } from 'next'
 import cookie from 'cookie'
 
+// Ensure `process` is available to the TypeScript checker in some environments
+declare const process: any
+
 export function signToken(payload: object){
   if (!process.env.JWT_SECRET) throw new Error('JWT_SECRET not set')
   return jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '7d' })
