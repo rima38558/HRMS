@@ -68,6 +68,11 @@ Example: create admin + sample data
 set CREATE_SAMPLE_LAW=1&& set CREATE_SAMPLE_WAGE=1&& npm run create-admin
 ```
 
+Development tips
+- **Linting:** Run `npm run lint` to check for issues and `npm run lint:fix` to auto-fix where possible.
+- **Formatting:** Run `npm run format` to apply Prettier formatting across the project.
+
+
 <!-- PR marker: feature branch update -->
 
 

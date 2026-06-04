@@ -1,3 +1,4 @@
+// @ts-ignore: node crypto types may be unavailable in this environment
 import crypto from 'crypto'
 
 export function generateTxnId(){

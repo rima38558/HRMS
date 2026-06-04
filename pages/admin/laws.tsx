@@ -39,7 +39,7 @@ export const getServerSideProps: GetServerSideProps = async (context) =>{
   const decoded: any = getUserFromRequest(context.req as any)
   if (!decoded || !decoded.userId) return { redirect: { destination: '/auth/signup', permanent: false } }
   const user = await prisma.user.findUnique({ where: { id: decoded.userId } })
-  const adminEmails = process.env.ADMIN_EMAILS ? process.env.ADMIN_EMAILS.split(',').map(s=>s.trim()) : []
+  const adminEmails = process.env.ADMIN_EMAILS ? process.env.ADMIN_EMAILS.split(',').map((s: string) => s.trim()) : []
   if (!user || (user.role !== 'admin' && !adminEmails.includes(user.email))) {
     return { redirect: { destination: '/', permanent: false } }
   }

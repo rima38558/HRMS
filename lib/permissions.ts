@@ -9,7 +9,7 @@ export async function isAdminRequest(req: NextApiRequest){
   if (!user) return false
   if (user.role === 'admin') return true
   // allow override via env ADMIN_EMAILS (comma-separated)
-  const adminEmails = process.env.ADMIN_EMAILS ? process.env.ADMIN_EMAILS.split(',').map(s=>s.trim()) : []
+  const adminEmails = process.env.ADMIN_EMAILS ? process.env.ADMIN_EMAILS.split(',').map((s: string) => s.trim()) : []
   if (adminEmails.includes(user.email)) return true
   return false
 }

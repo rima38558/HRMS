@@ -3,18 +3,22 @@ import prisma from '../../lib/prisma'
 
 export default function Services({ services }: any){
   return (
-    <div className="p-8">
-      <h1 className="text-xl font-semibold mb-4">Services Catalogue</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {services.map((s: any) => (
-          <div key={s.id} className="p-4 bg-white rounded shadow">
-            <h2 className="font-bold">{s.title}</h2>
-            <p className="text-sm">{s.description}</p>
-            <p className="mt-2 font-medium">Price: ₹{s.price}</p>
-            <Link href={`/services/${s.id}`} className="mt-2 inline-block px-3 py-1 bg-blue-600 text-white rounded">View</Link>
-          </div>
-        ))}
-      </div>
+    <div className="max-w-4xl mx-auto p-8">
+      <h1 className="text-2xl font-semibold mb-4">Our Services</h1>
+      {services.length === 0 ? (
+        <p className="text-gray-600">No services available right now.</p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {services.map((s: any) => (
+            <div key={s.id} className="p-4 bg-white rounded shadow">
+              <h2 className="font-bold">{s.title}</h2>
+              <p className="text-sm">{s.description}</p>
+              <p className="mt-2 font-medium">Price: ₹{s.price}</p>
+              <Link href={`/services/${s.id}`} className="mt-2 inline-block px-3 py-1 bg-blue-600 text-white rounded">View</Link>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

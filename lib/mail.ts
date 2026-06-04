@@ -33,7 +33,7 @@ export async function sendChecklistEmail(to: string, serviceTitle: string, check
   const htmlList = checklist && checklist.length ? `<ul>${checklist.map((c:any)=>`<li>${c}</li>`).join('')}</ul>` : ''
 
   if (host && port && user && pass){
-    const transporter = require('nodemailer').createTransport({ host, port, auth: { user, pass } })
+    const transporter = nodemailer.createTransport({ host, port, auth: { user, pass } })
     const info = await transporter.sendMail({
       from: `${process.env.SMTP_FROM || 'no-reply@example.com'}`,
       to,
