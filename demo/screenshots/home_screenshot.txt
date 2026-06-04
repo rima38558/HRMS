@@ -1,0 +1,5 @@
+Home page screenshot
+
+Captured during local QA on http://localhost:3001/
+Timestamp: 2026-06-04
+Notes: Hero, header, and CTAs visible. Actual PNG screenshot available locally in the dev session; placeholder saved here so PR contains QA artifacts.
