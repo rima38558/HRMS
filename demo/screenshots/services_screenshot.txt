@@ -1,0 +1,5 @@
+Services page screenshot
+
+Captured during local QA on http://localhost:3001/services
+Timestamp: 2026-06-04
+Notes: Services list rendered; server-side data requires `DATABASE_URL` to test fully.

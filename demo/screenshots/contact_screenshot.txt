@@ -1,0 +1,5 @@
+Contact page screenshot
+
+Captured during local QA on http://localhost:3001/contact
+Timestamp: 2026-06-04
+Notes: Contact form fields present; automated fill performed but programmatic submission was not triggered in this environment.

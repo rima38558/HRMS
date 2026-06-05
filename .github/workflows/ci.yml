@@ -17,7 +17,13 @@ jobs:
           node-version: 18
           cache: 'npm'
       - name: Install dependencies
-        run: npm ci
+        run: |
+          set -euo pipefail
+          if [ -f package-lock.json ]; then
+            echo "Removing checked-in package-lock.json to avoid platform-specific binaries"
+            rm package-lock.json
+          fi
+          npm install
       - name: Run lint
         run: npm run lint
       - name: Build
@@ -26,8 +32,11 @@ jobs:
         run: npm run prisma:generate
 
       - name: Deploy to Vercel (optional)
-        if: secrets.VERCEL_TOKEN != ''
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         run: |
-          npx vercel --prod --token "$VERCEL_TOKEN"
+          if [ -n "$VERCEL_TOKEN" ]; then
+            npx vercel --prod --token "$VERCEL_TOKEN"
+          else
+            echo "VERCEL_TOKEN not set — skipping Vercel deploy"
+          fi
