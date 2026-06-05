@@ -19,12 +19,11 @@ jobs:
       - name: Install dependencies
         run: |
           set -euo pipefail
-          if npm ci; then
-            echo "npm ci succeeded"
-          else
-            echo "npm ci failed — running npm install"
-            npm install
+          if [ -f package-lock.json ]; then
+            echo "Removing checked-in package-lock.json to avoid platform-specific binaries"
+            rm package-lock.json
           fi
+          npm install
       - name: Run lint
         run: npm run lint
       - name: Build
