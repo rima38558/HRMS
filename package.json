@@ -28,7 +28,6 @@
     "react-dom": "18.2.0"
   },
   "devDependencies": {
-    "@next/swc-win32-x64-msvc": "^16.2.6",
     "@types/cookie": "^0.6.0",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^25.9.1",
