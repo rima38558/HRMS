@@ -1,0 +1,56 @@
+name: Apply Branch Protection
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to protect'
+        required: true
+        default: 'add-laws-minimum-wage-admin-demo'
+
+jobs:
+  apply-protection:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Show context
+        run: |
+          echo "Repository: $GITHUB_REPOSITORY"
+          echo "Branch: ${{ github.event.inputs.branch }}"
+
+      - name: Apply branch protection via REST API
+        env:
+          GITHUB_PAT: ${{ secrets.BRANCH_PROTECTION_PAT }} # set this secret in the repo
+          BRANCH: ${{ github.event.inputs.branch }}
+        run: |
+          repo_full="$GITHUB_REPOSITORY"
+          OWNER="${repo_full%%/*}"
+          REPO="${repo_full##*/}"
+
+          cat > body.json <<'JSON'
+{
+  "required_status_checks": {
+    "strict": true,
+    "contexts": ["CI"]
+  },
+  "enforce_admins": true,
+  "required_pull_request_reviews": {
+    "dismiss_stale_reviews": true,
+    "required_approving_review_count": 1
+  },
+  "restrictions": null
+}
+JSON
+
+          echo "Applying protection to $OWNER/$REPO@$BRANCH"
+          resp=$(curl -s -w "%{http_code}" -o /tmp/response.txt -X PUT \
+            -H "Authorization: token $GITHUB_PAT" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/$OWNER/$REPO/branches/$BRANCH/protection" \
+            -d @body.json)
+
+          echo "HTTP status: $resp"
+          echo "Response body:" && cat /tmp/response.txt
+          if [ "$resp" -ge 400 ]; then
+            echo "Failed to apply branch protection" >&2
+            exit 1
+          fi
