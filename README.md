@@ -1,3 +1,5 @@
+[![CI](https://github.com/rima38558/HRMS/actions/workflows/ci.yml/badge.svg)](https://github.com/rima38558/HRMS/actions/workflows/ci.yml)
+
 Legal Compliances & Payroll Services — Webapp
 
 Quick start
@@ -72,6 +74,36 @@ Development tips
 - **Linting:** Run `npm run lint` to check for issues and `npm run lint:fix` to auto-fix where possible.
 - **Formatting:** Run `npm run format` to apply Prettier formatting across the project.
 
+## Production deploy checklist
+
+Follow these steps when preparing a production deployment:
+
+- Create a production database and set `DATABASE_URL`.
+- Provision SMTP credentials and set `SMTP_HOST`, `SMTP_USER`, `SMTP_PASS`, and `SMTP_FROM`.
+- Provision PayU (or your payment gateway) credentials and set `PAYU_MERCHANT_ID`, `PAYU_MERCHANT_KEY`, and `PAYU_MERCHANT_SALT`.
+- Provision S3 (or other storage) and set `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_REGION`, and `AWS_S3_BUCKET`.
+- Set `JWT_SECRET` to a secure random value; do not use the development default.
+- Ensure `NODE_ENV=production` and build the app (`npm run build`).
+- Configure environment variables securely in your hosting platform (GitHub Actions secrets, Vercel environment variables, etc.).
+- Run `npx prisma migrate deploy` (or the appropriate Prisma migrate command) against the production database and verify migrations.
+- Configure and verify webhooks (PayU webhook URL, signing/verification) and test with sandbox keys.
+- Verify file upload permissions and validate uploads server-side.
+- Run smoke tests: signup/login, create an order, checkout flow, webhook handling, and admin pages.
+
+## Required environment variables
+
+A minimal list of environment variables (see `.env.example`):
+
+- `DATABASE_URL` — Prisma database connection string.
+- `JWT_SECRET` — secret used to sign JWT tokens.
+- `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM` — SMTP settings for sending OTP / notifications.
+- `PAYU_MERCHANT_ID`, `PAYU_MERCHANT_KEY`, `PAYU_MERCHANT_SALT`, `PAYU_ENV` — PayU credentials and environment.
+- `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_REGION`, `AWS_S3_BUCKET` — S3 credentials for file uploads.
+- `VERCEL_TOKEN` — optional token used by CI to deploy to Vercel.
+
+Notes
+- Do not commit real secrets to the repository. Use a `.env` file locally and keep it out of version control; ensure `.gitignore` contains `.env` entries.
+- For CI, add secrets via GitHub repository settings (Settings → Secrets → Actions) or via your deployment provider's secret store.
 
 <!-- PR marker: feature branch update -->
 

@@ -1,0 +1,12 @@
+{
+  "admin@example.com": {
+    "passwordHash": "5a7544d5990ff34d8e015ba40ed96cede1b5989e4a1c46ea30a28edd8405533054c1df706a2f55995d1deddec6335d68b4fdcf3b73be6e3f381e6e71b8a0831b",
+    "salt": "a4cb77b1c1b25c3fffb17f6757863afb",
+    "role": "admin"
+  },
+  "client@example.com": {
+    "passwordHash": "02ca11fbae1271e23aba41607f9c6b6fd5fe918682c08f9d11ed378b063d98a567894e5a55158610346dc21042d97003c522da55c1d3e2c4d172cc8edcd37e78",
+    "salt": "239a5ef334f8f2fda6e23b05f7387d9b",
+    "role": "user"
+  }
+}

@@ -4,6 +4,7 @@ require('dotenv').config()
 
 const prisma = new PrismaClient()
 const fs = require('fs')
+const crypto = require('crypto')
 
 async function main(){
   const email = process.env.ADMIN_SEED_EMAIL || 'admin@example.com'
@@ -31,6 +32,18 @@ async function main(){
   console.log("1. Open DevTools → Application → Cookies for http://localhost:3000")
   console.log("2. Add cookie named 'token' with the above value and path '/'")
   console.log("3. Refresh the admin page (e.g., /admin/laws or /admin/minimum-wages).")
+  
+  // If ADMIN_PASSWORD is provided, store a bcrypt hash locally for password-based test login
+  if (process.env.ADMIN_PASSWORD){
+    try{
+      const salt = crypto.randomBytes(16).toString('hex')
+      const derived = crypto.scryptSync(process.env.ADMIN_PASSWORD, salt, 64).toString('hex')
+      const tdata = fs.existsSync('.test_users.json') ? JSON.parse(fs.readFileSync('.test_users.json','utf8')||'{}') : {}
+      tdata[email] = { passwordHash: derived, salt, role: 'admin' }
+      fs.writeFileSync('.test_users.json', JSON.stringify(tdata, null, 2))
+      console.log('Wrote admin password hash to .test_users.json')
+    }catch(e){ console.warn('Failed to write test credentials:', e.message||e) }
+  }
   
   if (process.env.CREATE_SAMPLE_LAW === '1'){
     try{

@@ -6,6 +6,17 @@ datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
 }
+enum Role {
+  USER
+  ADMIN
+  MANAGER
+  ACCOUNTANT
+}
+
+enum BillingInterval {
+  MONTH
+  YEAR
+}
 
 model User {
   id           String   @id @default(cuid())
@@ -19,10 +30,12 @@ model User {
   district     String?
   pincode      String?
   isVerified   Boolean  @default(false)
-  role         String   @default("user")
+  role         Role     @default(USER)
+  billingInfo  Json?
   createdAt    DateTime @default(now())
   emailOtps    EmailOtp[]
   orders       Order[]
+  subscriptions Subscription[]
 }
 
 model EmailOtp {
@@ -42,6 +55,10 @@ model Service {
   price        Float
   gstRate      Float    @default(0)
   checklist    String?
+  isRecurring  Boolean  @default(false)
+  billingInterval BillingInterval?
+  consultancyCharges Float?  
+  discountPercent Float? @default(0)
   active       Boolean  @default(true)
 }
 
@@ -57,6 +74,33 @@ model Order {
   paymentStatus     String   @default("PENDING")
   items             String
   documents         Document[]
+}
+
+model Coupon {
+  id        String   @id @default(cuid())
+  code      String   @unique
+  amount    Float?   // fixed amount off
+  percent   Float?   // percentage off
+  active    Boolean  @default(true)
+  expiresAt DateTime?
+}
+
+model Cart {
+  id      String @id @default(cuid())
+  user    User   @relation(fields: [userId], references: [id])
+  userId  String
+  items   Json
+  updatedAt DateTime @updatedAt
+}
+
+model Subscription {
+  id         String   @id @default(cuid())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  serviceId  String
+  status     String   @default("ACTIVE")
+  startedAt  DateTime @default(now())
+  nextBilling DateTime?
 }
 
 model Document {

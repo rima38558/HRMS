@@ -19,14 +19,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (!order) return res.status(404).json({ error: 'Order not found' })
   if (order.userId !== decoded.userId) return res.status(403).json({ error: 'Not allowed' })
 
-  // decode base64
+  // decode base64 and validate MIME type + size
   const matches = data.match(/^data:([A-Za-z-+/]+);base64,(.+)$/)
   let buffer: Buffer
+  let mime = ''
   if (matches){
+    mime = matches[1]
     buffer = Buffer.from(matches[2], 'base64')
   }else{
     buffer = Buffer.from(data, 'base64')
   }
+
+  // Basic validations
+  const MAX_BYTES = 10 * 1024 * 1024 // 10 MB
+  if (buffer.length > MAX_BYTES) return res.status(413).json({ error: 'File too large' })
+
+  const allowed = ['image/png', 'image/jpeg', 'application/pdf']
+  if (mime && !allowed.includes(mime)) return res.status(400).json({ error: 'Unsupported file type' })
 
   const s3Bucket = process.env.S3_BUCKET
   const safeName = `${Date.now()}_${filename.replace(/[^a-zA-Z0-9_.-]/g, '_')}`

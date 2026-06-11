@@ -34,6 +34,8 @@ export function getUserFromRequest(req: any){
     const token = cookies?.token
     if (!token) return null
     const decoded = verifyToken(token) as any
+    // Normalize token payload to include userId for older tokens that used `id`
+    if (decoded && !decoded.userId && decoded.id) decoded.userId = decoded.id
     return decoded
   }catch(e){
     return null
