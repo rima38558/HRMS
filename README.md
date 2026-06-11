@@ -1,3 +1,5 @@
+[![CI](https://github.com/rima38558/HRMS/actions/workflows/ci.yml/badge.svg)](https://github.com/rima38558/HRMS/actions/workflows/ci.yml)
+
 Legal Compliances & Payroll Services — Webapp
 
 Quick start

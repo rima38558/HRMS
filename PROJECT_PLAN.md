@@ -53,6 +53,29 @@ Acceptance Criteria
 
 Security / Compliance Notes
 - Store secrets (DB, SMTP, PayU keys) in environment variables, never in repo
+
+SaaS features / Services & Billing
+---------------------------------
+- Support one-time services (licenses, filings) and recurring services (payroll, compliance, consultancy).
+- Service cards should include: title, description, checklist, price, GST, consultancy charges, discount percent, coupon support, recurring flag and billing interval.
+- Cart flow: users can add multiple one-time services and subscriptions; on checkout create Order and/or Subscription records.
+- Account creation: if a client proceeds to purchase and is not authenticated, prompt account creation (email OTP or password signup), then continue checkout.
+- Coupon and discount system: support fixed-amount and percentage coupons, expiry and activation flags.
+- Admin panel: CRUD services, manage coupons, view orders/subscriptions, manual invoicing.
+- Payment: one-time via existing PayU flow; recurring via provider supporting subscriptions (Stripe/PayU recurring, depending on availability).
+
+Data model changes (Prisma):
+- Add `Role` enum and expand `User` with `billingInfo` and `subscriptions` relation.
+- Extend `Service` with `isRecurring`, `billingInterval`, `consultancyCharges`, and `discountPercent`.
+- Add `Coupon`, `Cart`, and `Subscription` models.
+
+Implementation roadmap (high level):
+1. Design DB models and update Prisma schema (done).
+2. Create migrations and run `prisma generate` locally.
+3. Implement backend APIs: service listing, cart (add/remove), coupon validation, checkout for one-time and subscription creation, webhooks for payment provider.
+4. Implement frontend: service list and cards, cart page, checkout flow, user dashboard (orders/subscriptions), admin management pages.
+5. Email notifications and receipts; schedule recurring invoices.
+6. Tests and CI integration; security hardening.
 - Use HTTPS in production, secure cookies, CSRF protection for forms where needed
 - Limit upload types and sizes; scan uploaded files before processing
 
